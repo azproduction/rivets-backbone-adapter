@@ -23,9 +23,19 @@
 
     <div class="body">
         <div>Name: <input type="text" data-value="android.name"/></div>
+
+        <h3>Options</h3>
+        <ul>
+            <!-- 1) Nested models support -->
+            <li>Model <input type="text" data-value="android.options.model"></li>
+            <li>Year <input type="text" data-value="android.options.year"></li>
+            <li>Release <input type="text" data-value="android.options.release"></li>
+        </ul>
+
         <h2>Jobs <button data-on-click="android:addJob">Add</button></h2>
 
         <ul>
+            <!-- 2) Nested collections support -->
             <li data-each-job="android.jobs" data-id="job:cid">
                 <p>
                     Job name
@@ -39,6 +49,7 @@
                 </h3>
 
                 <ul>
+                    <!-- 3) Deep nested collections support -->
                     <li data-each-office="job.offices" data-id="office:cid">
                         Office name
                         <input type="text" data-value="office.name"/>
@@ -91,14 +102,27 @@
         }
     });
 
+    var Options = Backbone.RelationalModel.extend({
+        defaults: {
+            model: '42',
+            year: new Date().getFullYear(),
+            release: Math.random().toString(16).slice(2, 10)
+        }
+    });
+
     var Android = Backbone.RelationalModel.extend({
         defaults: {
-            name: 'Android'
+            name: 'Android',
+            options: {}
         },
         relations: [{
             type: Backbone.HasMany,
             key: 'jobs',
             relatedModel: Job
+        }, {
+            type: Backbone.HasOne,
+            key: 'options',
+            relatedModel: Options
         }],
         initialize: function () {
             this.set('name', 'Android id ' + Math.random().toString(16).slice(2, 10));
