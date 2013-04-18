@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rivets.js Backbone Adapter example</title>
+    <script type="text/javascript" src="vendors/jquery.min.js"></script>
+    <script type="text/javascript" src="vendors/underscore.min.js"></script>
+    <script type="text/javascript" src="vendors/backbone.min.js"></script>
+    <script type="text/javascript" src="vendors/backbone-relational.js"></script>
+    <script type="text/javascript" src="vendors/rivets.min.js"></script>
+    <script type="text/javascript" src="../rivets-backbone.js"></script>
+
+    <style type="text/css">
+        .body,
+        .log {
+            float: left;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="android">
+    <h1>Android "<span data-text="android.name"></span>"</h1>
+
+    <div class="body">
+        <div>Name: <input type="text" data-value="android.name"/></div>
+        <h2>Jobs <button data-on-click="android:addJob">Add</button></h2>
+
+        <ul>
+            <li data-each-job="android.jobs" data-id="job:cid">
+                <p>
+                    Job name
+                    <input type="text" data-value="job.name"/>
+                    <button data-on-click="job:destroy">Remove</button>
+                </p>
+
+                <h3>
+                    Offices
+                    <button data-on-click="job:addOffice">Add</button>
+                </h3>
+
+                <ul>
+                    <li data-each-office="job.offices" data-id="office:cid">
+                        Office name
+                        <input type="text" data-value="office.name"/>
+                        <button data-on-click="office:destroy">Remove</button>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <pre class="log"></pre>
+</div>
+<script type="text/javascript">
+    //
+    // Backbone Models
+    //
+    var Office = Backbone.RelationalModel.extend({
+        initialize: function () {
+            var name = 'Office id: ' + Math.random().toString(16).slice(2, 10);
+            this.set('name', name);
+        },
+
+        destroy: function () {
+            // do not return any value to prevent Prevent Default
+            Backbone.RelationalModel.prototype.destroy.call(this);
+        }
+    });
+
+    var Job = Backbone.RelationalModel.extend({
+        defaults: {
+            name: 'Coding'
+        },
+        relations: [{
+            type: Backbone.HasMany,
+            key: 'offices',
+            relatedModel: Office
+        }],
+        initialize: function () {
+            var name = ['Coding JavaScript', 'Coding HTML', 'Coding Perl', 'Coding Python'][ 0 | Math.random() * 4];
+            this.set('name', name);
+        },
+
+        destroy: function () {
+            // do not return any value to prevent Prevent Default
+            Backbone.RelationalModel.prototype.destroy.call(this);
+        },
+
+        addOffice: function () {
+            this.get('offices').add({});
+        }
+    });
+
+    var Android = Backbone.RelationalModel.extend({
+        defaults: {
+            name: 'Android'
+        },
+        relations: [{
+            type: Backbone.HasMany,
+            key: 'jobs',
+            relatedModel: Job
+        }],
+        initialize: function () {
+            this.set('name', 'Android id ' + Math.random().toString(16).slice(2, 10));
+        },
+
+        addJob: function () {
+            this.get('jobs').add({});
+        }
+    });
+
+    //
+    // Backbone Views
+    //
+    var AndroidView = Backbone.View.extend({
+        initialize: function () {
+
+            // data-bind part
+            this.binding = rivets.bind(this.el, {
+                android: this.model
+            });
+        },
+
+        jsonData: function () {
+            return JSON.stringify(this.model.toJSON(), null, '    ');
+        }
+    });
+
+    // Create android
+    var android = new AndroidView({
+        el: $('.android')[0],
+        // Data skeleton
+        model: new Android({
+            jobs: [{
+                offices: [{
+
+                }]
+            }]
+        })
+    });
+
+    // inspect data
+    $(document).click(function () {
+        $('pre').text(android.jsonData());
+    }).click();
+
+</script>
+</body>
+</html>
