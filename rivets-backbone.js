@@ -52,6 +52,10 @@
         var root = getKeyPathRoot(model, keypath);
         model = root.model;
 
+        if (!(model instanceof Model)) {
+            return model;
+        }
+
         if (arguments.length === 2) {
             return model.get(root.key);
         }
