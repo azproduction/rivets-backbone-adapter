@@ -21,7 +21,7 @@
     /**
      * Resolves path chain
      *
-     * for a, 'b.c.d' returns {model: a.b.c, key:'d'}
+     * for a, 'b:c:d' returns {model: a:b:c, key:'d'}
      *
      * @param {Model}  model
      * @param {String} keypath
@@ -29,7 +29,7 @@
      * @returns {{model: Model, key: String}}
      */
     function getKeyPathRoot(model, keypath) {
-        keypath = keypath.split('.');
+        keypath = keypath.split(':');
 
         while (keypath.length > 1) {
             model = model.get(keypath.shift());
@@ -124,12 +124,10 @@
     }
 
     // Configure rivets data-bind for Backbone.js
-    rivets.configure({
-        adapter: {
-            subscribe: onOffFactory('on'),
-            unsubscribe: onOffFactory('off'),
-            read: read,
-            publish: publish
-        }
-    });
+    rivets.adapters[':'] =  {
+        subscribe: onOffFactory('on'),
+        unsubscribe: onOffFactory('off'),
+        read: read,
+        publish: publish
+    };
 });
