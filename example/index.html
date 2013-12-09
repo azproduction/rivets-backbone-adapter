@@ -19,41 +19,41 @@
 </head>
 <body>
 <div class="android">
-    <h1>Android "<span data-text="android.name"></span>"</h1>
+    <h1>Android "<span rv-text="android:name"></span>"</h1>
 
     <div class="body">
-        <div>Name: <input type="text" data-value="android.name"/></div>
+        <div>Name: <input type="text" rv-value="android:name"/></div>
 
         <h3>Options</h3>
         <ul>
             <!-- 1) Nested models support -->
-            <li>Model <input type="text" data-value="android.options.model"></li>
-            <li>Year <input type="text" data-value="android.options.year"></li>
-            <li>Release <input type="text" data-value="android.options.release"></li>
+            <li>Model <input type="text" rv-value="android:options:model"></li>
+            <li>Year <input type="text" rv-value="android:options:year"></li>
+            <li>Release <input type="text" rv-value="android:options:release"></li>
         </ul>
 
-        <h2>Jobs <button data-on-click="android:addJob">Add</button></h2>
+        <h2>Jobs <button rv-on-click="android.addJob">Add</button></h2>
 
         <ul>
             <!-- 2) Nested collections support -->
-            <li data-each-job="android.jobs" data-id="job:cid">
+            <li rv-each-job="android:jobs" rv-id="job.cid">
                 <p>
                     Job name
-                    <input type="text" data-value="job.name"/>
-                    <button data-on-click="job:destroy">Remove</button>
+                    <input type="text" rv-value="job:name"/>
+                    <button rv-on-click="job.destroy">Remove</button>
                 </p>
 
                 <h3>
                     Offices
-                    <button data-on-click="job:addOffice">Add</button>
+                    <button rv-on-click="job.addOffice">Add</button>
                 </h3>
 
                 <ul>
                     <!-- 3) Deep nested collections support -->
-                    <li data-each-office="job.offices" data-id="office:cid">
+                    <li rv-each-office="job:offices" rv-id="office.cid">
                         Office name
-                        <input type="text" data-value="office.name"/>
-                        <button data-on-click="office:destroy">Remove</button>
+                        <input type="text" rv-value="office:name"/>
+                        <button rv-on-click="office.destroy">Remove</button>
                     </li>
                 </ul>
             </li>
@@ -70,6 +70,7 @@
         initialize: function () {
             var name = 'Office id: ' + Math.random().toString(16).slice(2, 10);
             this.set('name', name);
+            _.bindAll(this, 'destroy');
         },
 
         destroy: function () {
@@ -90,6 +91,7 @@
         initialize: function () {
             var name = ['Coding JavaScript', 'Coding HTML', 'Coding Perl', 'Coding Python'][ 0 | Math.random() * 4];
             this.set('name', name);
+            _.bindAll(this, 'addOffice', 'destroy');
         },
 
         destroy: function () {
@@ -126,6 +128,7 @@
         }],
         initialize: function () {
             this.set('name', 'Android id ' + Math.random().toString(16).slice(2, 10));
+            _.bindAll(this, 'addJob');
         },
 
         addJob: function () {
@@ -139,7 +142,7 @@
     var AndroidView = Backbone.View.extend({
         initialize: function () {
 
-            // data-bind part
+            // rv-bind part
             this.binding = rivets.bind(this.el, {
                 android: this.model
             });
