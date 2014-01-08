@@ -8,7 +8,7 @@
         ".jshintrc",
         ".gitignore",
         "README.md",
-        "example/**/*"
+        "example"
     ],
     "dependencies": {
         "backbone": "*",
