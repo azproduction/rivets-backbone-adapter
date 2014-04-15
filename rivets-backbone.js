@@ -3,7 +3,7 @@
     'use strict';
     if (typeof exports === 'object') {
         // CommonJS
-        factory(require('rivets'), require('Backbone'));
+        factory(require('rivets'), require('backbone'));
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(['rivets', 'Backbone'], factory);
