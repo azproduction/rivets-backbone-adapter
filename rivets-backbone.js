@@ -6,7 +6,7 @@
         factory(require('rivets'), require('backbone'));
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['rivets', 'Backbone'], factory);
+        define(['rivets', 'backbone'], factory);
     } else {
         // Browser globals
         factory(root.rivets, root.Backbone);
