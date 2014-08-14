@@ -85,7 +85,8 @@
             if (collection instanceof Collection) {
                 collection[action]('add remove reset', callback);
             } else {
-                root.model[action]('change:' + root.key, callback);
+                var eventName = 'change' + (root.key === '*' ? '' : (':' + root.key));
+                root.model[action](eventName, callback);
             }
         };
     }
