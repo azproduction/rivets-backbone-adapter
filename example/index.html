@@ -31,6 +31,7 @@
             <li>Year <input type="text" rv-value="android:options:year"></li>
             <li>Release <input type="text" rv-value="android:options:release"></li>
         </ul>
+        <div>Summary: <span rv-text="android:options.format < :*"></span></div>
 
         <h2>Jobs <button rv-on-click="android.addJob">Add</button></h2>
 
@@ -109,7 +110,11 @@
             model: '42',
             year: new Date().getFullYear(),
             release: Math.random().toString(16).slice(2, 10)
-        }
+        },
+
+      format: function () {
+        return _.map(this.attributes, function(v, k) { return k + ': ' + v; }).join(', ');
+      }
     });
 
     var Android = Backbone.RelationalModel.extend({
