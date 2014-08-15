@@ -131,4 +131,6 @@
         read: read,
         publish: publish
     };
+    
+    return rivets;
 });
