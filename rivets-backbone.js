@@ -125,11 +125,11 @@
     }
 
     // Configure rivets data-bind for Backbone.js
-    rivets.adapters[':'] =  {
-        subscribe: onOffFactory('on'),
-        unsubscribe: onOffFactory('off'),
-        read: read,
-        publish: publish
+    rivets.adapters[':'] = {
+        observe: onOffFactory('on'),
+        unobserve: onOffFactory('off'),
+        get: read,
+        set: publish
     };
     
     return rivets;
