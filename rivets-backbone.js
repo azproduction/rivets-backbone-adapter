@@ -125,24 +125,12 @@
     }
 
     // Configure rivets data-bind for Backbone.js
-    // new adapter API using sightglass (rivets >= 0.7.0)
-    if (rivets.adapters['.']['observe']) {
-      rivets.adapters[':'] =  {
+    rivets.adapters[':'] = {
         observe: onOffFactory('on'),
         unobserve: onOffFactory('off'),
         get: read,
         set: publish
-      };
-    }
-    // old adapter API without sightglass
-    else {
-      rivets.adapters[':'] =  {
-        subscribe: onOffFactory('on'),
-        unsubscribe: onOffFactory('off'),
-        read: read,
-        publish: publish
-      };
-    }
+    };
     
     return rivets;
 });
