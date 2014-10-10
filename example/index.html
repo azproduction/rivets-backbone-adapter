@@ -31,7 +31,10 @@
             <li>Year <input type="text" rv-value="android:options:year"></li>
             <li>Release <input type="text" rv-value="android:options:release"></li>
         </ul>
+
+        <!-- 5) Star keypath returns all model's attributes and listens to change event -->
         <div>Summary: <span rv-text="android:options.format < :*"></span></div>
+        <div><textarea cols="30" rows="6" rv-value="android:options:* | json"></textarea></div>
 
         <h2>Jobs <button rv-on-click="android.addJob">Add</button></h2>
 
@@ -64,6 +67,18 @@
     <pre class="log"></pre>
 </div>
 <script type="text/javascript">
+    //
+    // Rivets Formatters for *-keypath example
+    //
+    rivets.formatters.json = {
+        read: function(object) {
+            return JSON.stringify(object, null, 4);
+        },
+        publish: function(string) {
+            return JSON.parse(string);
+        }
+    };
+
     //
     // Backbone Models
     //
@@ -112,9 +127,9 @@
             release: Math.random().toString(16).slice(2, 10)
         },
 
-      format: function () {
-        return _.map(this.attributes, function(v, k) { return k + ': ' + v; }).join(', ');
-      }
+        format: function () {
+            return _.map(this.attributes, function(v, k) { return k + ': ' + v; }).join(', ');
+        }
     });
 
     var Android = Backbone.RelationalModel.extend({
@@ -154,7 +169,7 @@
         },
 
         jsonData: function () {
-            return JSON.stringify(this.model.toJSON(), null, '    ');
+            return JSON.stringify(this.model.toJSON(), null, 4);
         }
     });
 
