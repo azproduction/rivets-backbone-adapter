@@ -80,7 +80,7 @@
             model[action](eventName, callback);
 
             if (value instanceof Collection) {
-                value[action]('add remove reset', callback);
+                value[action]('add remove reset sort', callback);
             }
         };
     }
