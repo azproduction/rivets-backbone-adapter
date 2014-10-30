@@ -27,4 +27,4 @@ To avoid this issue please use native rivets.js `.`-adaptor. Eg `rv-smth="collec
    * `rv-value="model:* | json"` 
    * `rv-text="model.format < :*"`
 
-[See example](http://azproduction.ru/rivets-backbone-adapter/example/index.html) and [code](example/index.html)
+[See example](http://azproduction.github.io/rivets-backbone-adapter/example/index.html) and [code](example/index.html)
