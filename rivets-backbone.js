@@ -19,29 +19,6 @@
         Collection = Backbone.Collection;
 
     /**
-     * Resolves path chain
-     *
-     * for a, 'b:c:d' returns {model: a:b:c, key:'d'}
-     *
-     * @param {Model}  model
-     * @param {String} keypath
-     *
-     * @returns {{model: Model, key: String}}
-     */
-    function getKeyPathRoot(model, keypath) {
-        keypath = keypath.split(':');
-
-        while (keypath.length > 1) {
-            model = model.get(keypath.shift());
-        }
-
-        return {
-            model: model,
-            key: keypath.shift()
-        };
-    }
-
-    /**
      * @param {Model}  model
      * @param {String} keypath
      * @param {*}      [value]
@@ -49,18 +26,36 @@
      * @returns {*}
      */
     function getterSetter(model, keypath, value) {
-        var root = getKeyPathRoot(model, keypath);
-        model = root.model;
-
         if (!(model instanceof Model)) {
-            return model;
+            return;
         }
 
-        if (arguments.length === 2) {
-            return model.get(root.key);
+        if (arguments.length === 3) {
+            if (keypath === '*') {
+                // setting all attributes
+                // value should be an Object
+                model.set(value);
+                return;
+            }
+            // setting the only attribute
+            model.set(keypath, value);
+            return;
         }
 
-        model.set(root.key, value);
+        if (keypath === '*') {
+            // all attributes
+            value = model.attributes;
+        } else {
+            // one attribute
+            value = model.get(keypath);
+        }
+
+        // rivets cant iterate over Backbone.Collection -> return Array
+        if (value instanceof Collection) {
+            return value.models;
+        }
+
+        return value;
     }
 
     /**
@@ -79,58 +74,24 @@
                 return;
             }
 
-            var root = getKeyPathRoot(model, keypath),
-                collection = root.model.get(root.key);
+            var value = model.get(keypath);
 
-            if (collection instanceof Collection) {
-                collection[action]('add remove reset', callback);
-            } else {
-                var eventName = 'change' + (root.key === '*' ? '' : (':' + root.key));
-                root.model[action](eventName, callback);
+            var eventName = 'change' + (keypath === '*' ? '' : (':' + keypath));
+            model[action](eventName, callback);
+
+            if (value instanceof Collection) {
+                value[action]('add remove reset sort', callback);
             }
         };
     }
 
-    /**
-     * @param {Model|Collection} obj
-     * @param {String}           keypath
-     * @returns {*}
-     */
-    function read(obj, keypath) {
-        if (obj instanceof Collection) {
-            return obj[keypath];
-        }
-
-        var value = getterSetter(obj, keypath);
-
-        // rivets cant iterate over Backbone.Collection -> return Array
-        if (value instanceof Collection) {
-            return value.models;
-        }
-
-        return value;
-    }
-
-    /**
-     * @param {Model|Collection} obj
-     * @param {String}           keypath
-     * @param {*}                value
-     */
-    function publish(obj, keypath, value) {
-        if (obj instanceof Collection) {
-            obj[keypath] = value;
-        } else {
-            getterSetter(obj, keypath, value);
-        }
-    }
-
     // Configure rivets data-bind for Backbone.js
-    rivets.adapters[':'] =  {
+    rivets.adapters[':'] = {
         subscribe: onOffFactory('on'),
         unsubscribe: onOffFactory('off'),
-        read: read,
-        publish: publish
+        read: getterSetter,
+        publish: getterSetter
     };
-    
+
     return rivets;
 });
