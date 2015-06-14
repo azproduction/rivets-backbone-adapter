@@ -25,8 +25,8 @@
      *
      * @returns {*}
      */
-    function getterSetter(model, keypath, value) {
-        if (!(model instanceof Model)) {
+    function getterSetter(obj, keypath, value) {
+        if (!(obj instanceof Model) && !(obj instanceof Collection)) {
             return;
         }
 
@@ -34,20 +34,20 @@
             if (keypath === '*') {
                 // setting all attributes
                 // value should be an Object
-                model.set(value);
+                obj.set(value);
                 return;
             }
             // setting the only attribute
-            model.set(keypath, value);
+            obj.set(keypath, value);
             return;
         }
 
         if (keypath === '*') {
             // all attributes
-            value = model.attributes;
+            value = obj.attributes;
         } else {
             // one attribute
-            value = model.get(keypath);
+            value = obj.get(keypath);
         }
 
         // rivets cant iterate over Backbone.Collection -> return Array
