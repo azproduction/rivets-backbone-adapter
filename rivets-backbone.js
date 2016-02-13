@@ -51,7 +51,7 @@
         }
 
         // rivets cant iterate over Backbone.Collection -> return Array
-        if (value instanceof Collection) {
+        if (!adapter.returnCollection && value instanceof Collection) {
             return value.models;
         }
 
@@ -86,7 +86,8 @@
     }
 
     // Configure rivets data-bind for Backbone.js
-    rivets.adapters[':'] = {
+    var adapter = rivets.adapters[':'] = {
+        returnCollection: false,
         observe: onOffFactory('on'),
         unobserve: onOffFactory('off'),
         get: getterSetter,
